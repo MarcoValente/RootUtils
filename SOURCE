@@ -1,0 +1,10 @@
+#Setting up the suitable version of root
+VERSION=6.04.14-x86_64-slc6-gcc49-opt
+
+#Setting up root (lxplus)
+#echo - Setting up root $VERSION
+#lsetup --quiet "root $VERSION"
+
+#Setting up useful environment variables
+echo - Adding lib/ directory to LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD/lib
