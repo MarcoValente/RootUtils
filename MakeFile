@@ -1,0 +1,15 @@
+# ------------------------------------------------------------------------------
+#    Title:       Makefile
+#    Author:      Marco Valente
+#    Date:        18.01.2016
+#
+#    Description: Makefile providing the compiling dependencies for the
+#                 RootUtils library.
+# ------------------------------------------------------------------------------
+
+
+CC      =   gcc
+FLAGS   =
+
+all:
+	echo "aaa"
