@@ -53,11 +53,14 @@ class ConfigParser {
         const char *    GetConstChar(string name);
         int             GetInt(string name);
         double          GetDouble(string name);
+        float           GetFloat(string name);
 
         int *           GetIntArray(string name);
+        float *         GetFloatArray(string name);
         double *        GetDoubleArray(string name);
         string *        GetStringArray(string name);
         vector<int>     GetIntVector(string name);
+        vector<float>   GetFloatVector(string name);
         vector<double>  GetDoubleVector(string name);
         vector<string>  GetStringVector(string name);
         vector<TString> GetTStringVector(string name);

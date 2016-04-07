@@ -22,6 +22,7 @@ LIB		= lib
 BIN		= bin
 SRC		= src
 MAIN	= main
+PYTHON  = python
 
 # Directory commands
 RMDIRS	= @rm -rf $(OBJ); rm -rf $(DICT); rm -rf $(LIB); rm -rf $(BIN)
@@ -152,6 +153,7 @@ clean: cleanlib
 	rm -f *~
 	rm -f $(SRC)/*~
 	rm -f $(MAIN)/*~
+	rm -f $(PYTHON)/*.pyc
 
 cleanall: clean
 	$(RMDIRS)

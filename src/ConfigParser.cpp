@@ -16,6 +16,20 @@
 
 using namespace std;
 
+// Fuctions
+
+void RemoveSpaces(string & str) {
+    std::string::iterator end_pos = std::remove(str.begin(), str.end(), ' ');
+    str.erase(end_pos, str.end());
+}
+
+void RemoveTabs(string & str) {
+    std::string::iterator end_pos = std::remove(str.begin(), str.end(), '\t');
+    str.erase(end_pos, str.end());
+}
+
+// Class implementation
+
 ClassImp(ConfigParser)
 
 ConfigParser::ConfigParser(): _options(), _verbose(true) {}
@@ -27,14 +41,13 @@ ConfigParser::ConfigParser(const char * nameconfigfile, bool verbose): _options(
 
 ConfigParser::~ConfigParser() {}
 
-void ConfigParser::Fill(const char * nameconfigfile) {
+void                ConfigParser::Fill(const char * nameconfigfile) {
     Clear();
     vector<char> separators;
 
     separators.push_back('=');
     separators.push_back(':');
     separators.push_back('\t');
-    separators.push_back(' ');
 
     std::ifstream file(nameconfigfile,ios::in);
     if(file.is_open()) {
@@ -42,12 +55,12 @@ void ConfigParser::Fill(const char * nameconfigfile) {
          while(getline(file,buffer)) {
           std::stringstream   linestream(buffer);
           std::string         to;
-          char                  sep = '=';
+          char                sep = '=';
         if (buffer.find("#") == 0 || buffer.empty()) {
             continue;
         }
         for(size_t s(0); s < separators.size();++s) {
-            if(buffer.find(separators[s])) {
+            if(buffer.find(separators[s])<999999999.) {
                 sep = separators[s];
                 break;
             }
@@ -55,6 +68,8 @@ void ConfigParser::Fill(const char * nameconfigfile) {
 
         vector<string> val;
         while(std::getline(linestream,to,sep)){
+            RemoveSpaces(to);
+            RemoveTabs(to);
             val.push_back(to);
         }
         Option<string> tmp(val[0],val[1]);
@@ -67,11 +82,9 @@ void ConfigParser::Fill(const char * nameconfigfile) {
     else {
       std::cerr << "Unable to open file " << nameconfigfile << endl;
     }
-
-
 }
 
-string ConfigParser::GetString(string name) {
+string              ConfigParser::GetString(string name) {
     string r;
     if(std::find(_names.begin(), _names.end(), name) != _names.end()){
         int index = find(_names.begin(), _names.end(), name) - _names.begin();
@@ -80,26 +93,33 @@ string ConfigParser::GetString(string name) {
     return r;
 }
 
-const char * ConfigParser::GetConstChar(string name) {
+const char *        ConfigParser::GetConstChar(string name) {
     string r(GetString(name));
     return r.c_str();
 }
 
-int ConfigParser::GetInt(string name) {
+int                 ConfigParser::GetInt(string name) {
     int ret;
     string val = GetString(name);
     ret = atoi(val.c_str());
     return ret;
 }
 
-double ConfigParser::GetDouble(string name) {
+double              ConfigParser::GetDouble(string name) {
     double ret;
     string val = GetString(name);
     ret = atof(val.c_str());
     return ret;
 }
 
-int * ConfigParser::GetIntArray(string name) {
+float               ConfigParser::GetFloat(string name) {
+    float ret;
+    string val = GetString(name);
+    ret = atof(val.c_str());
+    return ret;
+}
+
+int *               ConfigParser::GetIntArray(string name) {
     int * ret;
     string val = GetString(name);
     if(val.find("{") == 0 && val.find("}") > 0) {
@@ -127,7 +147,35 @@ int * ConfigParser::GetIntArray(string name) {
     return ret;
 }
 
-double * ConfigParser::GetDoubleArray(string name) {
+float *             ConfigParser::GetFloatArray(string name) {
+    float * ret;
+    string val = GetString(name);
+    if(val.find("{") == 0 && val.find("}") > 0) {
+        val.erase(0,1);
+        val.erase(val.find("}"),val.find("}")+1);
+
+        std::stringstream   valstream(val);
+        std::string         to;
+        char                sep = ',';
+        vector<float> vec;
+        while(std::getline(valstream,to,sep)){
+            vec.push_back(atof(to.c_str()));
+        }
+        float *r = new float[vec.size()];
+        for (size_t k = 0; k < vec.size(); k++) {
+            r[k] = vec[k];
+        }
+        ret = r;
+    }
+    else {
+        std::cerr << "WARNING: impossible to find '{','}' in the option: " << name << std::endl;
+        ret = 0;
+    }
+
+    return ret;
+}
+
+double *            ConfigParser::GetDoubleArray(string name) {
     double * ret;
     string val = GetString(name);
     if(val.find("{") == 0 && val.find("}") > 0) {
@@ -155,7 +203,7 @@ double * ConfigParser::GetDoubleArray(string name) {
     return ret;
 }
 
-string * ConfigParser::GetStringArray(string name) {
+string *            ConfigParser::GetStringArray(string name) {
     string * ret;
     string val = GetString(name);
     if(val.find("{") == 0 && val.find("}") > 0) {
@@ -183,7 +231,7 @@ string * ConfigParser::GetStringArray(string name) {
     return ret;
 }
 
-vector<int>     ConfigParser::GetIntVector(string name) {
+vector<int>         ConfigParser::GetIntVector(string name) {
     vector<int> ret;
     string val = GetString(name);
     if(val.find("{") == 0 && val.find("}") > 0) {
@@ -204,7 +252,28 @@ vector<int>     ConfigParser::GetIntVector(string name) {
     return ret;
 }
 
-vector<double>  ConfigParser::GetDoubleVector(string name) {
+vector<float>       ConfigParser::GetFloatVector(string name) {
+    vector<float> ret;
+    string val = GetString(name);
+    if(val.find("{") == 0 && val.find("}") > 0) {
+        val.erase(0,1);
+        val.erase(val.find("}"),val.find("}")+1);
+
+        std::stringstream   valstream(val);
+        std::string         to;
+        char                sep = ',';
+        while(std::getline(valstream,to,sep)){
+            ret.push_back(atof(to.c_str()));
+        }
+    }
+    else {
+        std::cerr << "WARNING: impossible to find '{','}' in the option: " << name << std::endl;
+    }
+
+    return ret;
+}
+
+vector<double>      ConfigParser::GetDoubleVector(string name) {
     vector<double> ret;
     string val = GetString(name);
     if(val.find("{") == 0 && val.find("}") > 0) {
@@ -225,7 +294,7 @@ vector<double>  ConfigParser::GetDoubleVector(string name) {
     return ret;
 }
 
-vector<string> ConfigParser::GetStringVector(string name) {
+vector<string>      ConfigParser::GetStringVector(string name) {
     vector<string> vec;
     string val = GetString(name);
     if(val.find("{") == 0 && val.find("}") > 0) {
@@ -246,7 +315,7 @@ vector<string> ConfigParser::GetStringVector(string name) {
     return vec;
 }
 
-vector<TString> ConfigParser::GetTStringVector(string name) {
+vector<TString>     ConfigParser::GetTStringVector(string name) {
     vector<TString> vec;
     string val = GetString(name);
     if(val.find("{") == 0 && val.find("}") > 0) {
@@ -267,11 +336,11 @@ vector<TString> ConfigParser::GetTStringVector(string name) {
     return vec;
 }
 
-void ConfigParser::Clear() {
+void                ConfigParser::Clear() {
     _names   = vector<string> ();
     _options = vector<Option<string>> ();
 }
 
-void ConfigParser::SetVerbose(bool verbose) {
+void                ConfigParser::SetVerbose(bool verbose) {
     _verbose = verbose;
 }
