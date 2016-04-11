@@ -53,12 +53,15 @@ void                ConfigParser::Fill(const char * nameconfigfile) {
     if(file.is_open()) {
       string                  buffer;
          while(getline(file,buffer)) {
-          std::stringstream   linestream(buffer);
-          std::string         to;
-          char                sep = '=';
         if (buffer.find("#") == 0 || buffer.empty()) {
             continue;
         }
+        else if(buffer.find("#") > 0) {
+            buffer = buffer.substr(0,buffer.find("#"));
+        }
+          std::stringstream   linestream(buffer);
+          std::string         to;
+          char                sep = '=';
         for(size_t s(0); s < separators.size();++s) {
             if(buffer.find(separators[s])<999999999.) {
                 sep = separators[s];

@@ -16,11 +16,11 @@ endif
 MAINDIR	= $(PWD)
 
 # Directories
-OBJ		= obj
+OBJ 	= obj
 DICT	= dict
-LIB		= lib
-BIN		= bin
-SRC		= src
+LIB 	= lib
+BIN 	= bin
+SRC 	= src
 MAIN	= main
 PYTHON  = python
 
