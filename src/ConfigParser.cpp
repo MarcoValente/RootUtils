@@ -2,8 +2,8 @@
 * @Author: Marco Valente <marco>
 * @Date:   2016-04-05T11:57:48+02:00
 * @Email:  marco.valente@cern.ch
-* @Last modified by:   marco
-* @Last modified time: 2016-04-06T21:48:33+02:00
+* @Last modified by:   marcovalente
+* @Last modified time: 2016-05-13T17:40:41+02:00
 */
 
 
@@ -53,15 +53,12 @@ void                ConfigParser::Fill(const char * nameconfigfile) {
     if(file.is_open()) {
       string                  buffer;
          while(getline(file,buffer)) {
-        if (buffer.find("#") == 0 || buffer.empty()) {
-            continue;
-        }
-        else if(buffer.find("#") > 0) {
-            buffer = buffer.substr(0,buffer.find("#"));
-        }
           std::stringstream   linestream(buffer);
           std::string         to;
           char                sep = '=';
+        if (buffer.find("#") == 0 || buffer.empty()) {
+            continue;
+        }
         for(size_t s(0); s < separators.size();++s) {
             if(buffer.find(separators[s])<999999999.) {
                 sep = separators[s];
@@ -119,6 +116,13 @@ float               ConfigParser::GetFloat(string name) {
     float ret;
     string val = GetString(name);
     ret = atof(val.c_str());
+    return ret;
+}
+
+bool                ConfigParser::GetBool(string name) {
+    bool ret = false;
+    std::string st = GetString(name);
+    istringstream(st) >> std::boolalpha >> ret;
     return ret;
 }
 

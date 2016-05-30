@@ -2,8 +2,8 @@
 * @Author: Marco Valente <marco>
 * @Date:   2016-04-05T11:53:45+02:00
 * @Email:  marco.valente@cern.ch
-* @Last modified by:   marco
-* @Last modified time: 2016-04-06T21:48:22+02:00
+* @Last modified by:   marcovalente
+* @Last modified time: 2016-05-13T17:40:57+02:00
 */
 
 
@@ -54,6 +54,7 @@ class ConfigParser {
         int             GetInt(string name);
         double          GetDouble(string name);
         float           GetFloat(string name);
+        bool            GetBool(string name); //need to use true
 
         int *           GetIntArray(string name);
         float *         GetFloatArray(string name);
